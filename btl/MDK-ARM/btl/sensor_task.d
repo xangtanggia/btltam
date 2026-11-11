@@ -1,4 +1,4 @@
-btl\sensor_task.o: sensor_task.c
+btl\sensor_task.o: ..\Core\Src\sensor_task.c
 btl\sensor_task.o: ../Core/Inc/sensor_task.h
 btl\sensor_task.o: ../Core/Inc/main.h
 btl\sensor_task.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
@@ -33,9 +33,7 @@ btl\sensor_task.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 btl\sensor_task.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 btl\sensor_task.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 btl\sensor_task.o: ../Core/Inc/app_data.h
-btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
-btl\sensor_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-btl\sensor_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 btl\sensor_task.o: ../Core/Inc/FreeRTOSConfig.h
 btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
@@ -45,3 +43,7 @@ btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_
 btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
 btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+btl\sensor_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+btl\sensor_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+btl\sensor_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+btl\sensor_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

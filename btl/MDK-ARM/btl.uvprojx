@@ -413,39 +413,39 @@
               <FilePath>../Core/Src/stm32f1xx_hal_msp.c</FilePath>
             </File>
             <File>
-              <FileName>app_data.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>sensor_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\sensor_task.c</FilePath>
-            </File>
-            <File>
-              <FileName>display_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\display_task.c</FilePath>
-            </File>
-            <File>
               <FileName>alarm_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\alarm_task.c</FilePath>
+              <FilePath>..\Core\Src\alarm_task.c</FilePath>
             </File>
             <File>
-              <FileName>uart_task.c</FileName>
+              <FileName>app_data.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\uart_task.c</FilePath>
+              <FilePath>..\Core\Src\app_data.c</FilePath>
             </File>
             <File>
               <FileName>button_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\button_task.c</FilePath>
+              <FilePath>..\Core\Src\button_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>display_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\display_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\sensor_task.c</FilePath>
             </File>
             <File>
               <FileName>setting.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\setting.c</FilePath>
+              <FilePath>..\Core\Src\setting.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\uart_task.c</FilePath>
             </File>
           </Files>
         </Group>

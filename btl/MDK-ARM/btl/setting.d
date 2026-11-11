@@ -1,9 +1,19 @@
-btl\setting.o: setting.c
+btl\setting.o: ..\Core\Src\setting.c
 btl\setting.o: ../Core/Inc/setting.h
 btl\setting.o: ../Core/Inc/app_data.h
-btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
-btl\setting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 btl\setting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+btl\setting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+btl\setting.o: ../Core/Inc/FreeRTOSConfig.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+btl\setting.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
 btl\setting.o: ../Core/Inc/main.h
 btl\setting.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 btl\setting.o: ../Core/Inc/stm32f1xx_hal_conf.h
@@ -35,3 +45,4 @@ btl\setting.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 btl\setting.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 btl\setting.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 btl\setting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+btl\setting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

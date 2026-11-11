@@ -68,6 +68,8 @@
 /**
   * @brief This function handles Non maskable interrupt.
   */
+	extern UART_HandleTypeDef huart1;
+
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
@@ -125,6 +127,10 @@ void BusFault_Handler(void)
   }
 }
 
+void USART1_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&huart1);
+}
 /**
   * @brief This function handles Undefined instruction or illegal state.
   */
@@ -156,6 +162,7 @@ void DebugMon_Handler(void)
 /**
   * @brief This function handles System tick timer.
   */
+
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */

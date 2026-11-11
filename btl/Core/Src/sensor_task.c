@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include <math.h>
 
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
@@ -38,7 +39,18 @@ static uint8_t dht11_error = DHT11_OK;
 static uint8_t dht11_error_bit = 0; //check
 static uint8_t dht11_error_stage = 0;// check
 #define MQ135_SAMPLE_COUNT           8U
+#define MQ135_VC                     5.0f
+#define MQ135_ADC_VREF               3.3f
+#define MQ135_ADC_MAX                4095.0f
 
+#define MQ135_R0_KOHM                7.3f
+#define MQ135_RL_KOHM                1.0f
+
+#define MQ135_DIVIDER_R1_KOHM        1.0f
+#define MQ135_DIVIDER_R2_KOHM        1.0f
+
+#define MQ135_PPM_COEFFICIENT        116.6020682f
+#define MQ135_PPM_EXPONENT           (-2.769034857f)
 typedef struct
 {
     uint16_t T1;
@@ -69,7 +81,7 @@ static const osThreadAttr_t sensorTask_attributes =
     .priority = SENSOR_TASK_PRIORITY
 };
 
-/* ======================== BMP280 ======================== */
+
 
 static uint16_t BMP280_U16(uint8_t *data)
 {
@@ -227,7 +239,7 @@ static uint8_t BMP280_ReadData(float *temperature, float *pressure)
     return 1;
 }
 
-/* ======================== DHT11 ======================== */
+
 
 static void DHT11_DelayUs(uint16_t us)
 {
@@ -277,91 +289,7 @@ static uint8_t DHT11_WaitLevel(GPIO_PinState level,
     return 1;
 }
 
-/*static uint8_t DHT11_Read(float *temperature, float *humidity)
-{
-    uint8_t data[5] = {0};
 
-    DHT11_SetOutput();
-
-    HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_RESET);
-    HAL_Delay(18);
-
-    HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-    DHT11_DelayUs(30);
-
-    DHT11_SetInput();
-
-    if (!DHT11_WaitLevel(GPIO_PIN_RESET, 100))
-    {
-        DHT11_SetOutput();
-        HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-        return 0;
-    }
-
-    if (!DHT11_WaitLevel(GPIO_PIN_SET, 100))
-    {
-        DHT11_SetOutput();
-        HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-        return 0;
-    }
-
-    if (!DHT11_WaitLevel(GPIO_PIN_RESET, 100))
-    {
-        DHT11_SetOutput();
-        HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-        return 0;
-    }
-
-    for (uint8_t i = 0; i < 40; i++)
-    {
-        if (!DHT11_WaitLevel(GPIO_PIN_SET, 100))
-        {
-            DHT11_SetOutput();
-            HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-            return 0;
-        }
-
-        uint16_t start = __HAL_TIM_GET_COUNTER(&htim3);
-
-        if (!DHT11_WaitLevel(GPIO_PIN_RESET, 100))
-        {
-            DHT11_SetOutput();
-            HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-            return 0;
-        }
-
-        uint16_t duration =
-            (uint16_t)(__HAL_TIM_GET_COUNTER(&htim3) - start);
-
-        data[i / 8] <<= 1;
-
-        if (duration > 40)
-        {
-            data[i / 8] |= 1;
-        }
-    }
-
-    DHT11_SetOutput();
-    HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-
-    if ((uint8_t)(data[0] + data[1] + data[2] + data[3]) != data[4])
-    {
-        return 0;
-    }
-
-    *humidity = data[0] + data[1] * 0.1f;
-
-    if (data[2] & 0x80U)
-    {
-        *temperature = -(float)(data[2] & 0x7FU) - data[3] * 0.1f;
-    }
-    else
-    {
-        *temperature = data[2] + data[3] * 0.1f;
-    }
-
-    return 1;
-}*/
 static uint8_t DHT11_Read(float *temperature, float *humidity)
 {
     uint8_t data[5] = {0};
@@ -480,7 +408,10 @@ dht11_error_stage = 0; //ch
 }
 
 
-/* ======================== MQ135 ======================== */
+
+
+
+
 
 static uint8_t MQ135_ReadADC(uint16_t *value)
 {
@@ -509,7 +440,69 @@ static uint8_t MQ135_ReadADC(uint16_t *value)
     return 1;
 }
 
-/* ======================== SENSOR TASK ======================== */
+static uint8_t MQ135_ADCToPPM(uint16_t adc, float *ppm)
+{
+    float voltage_adc;
+    float voltage_sensor;
+    float rl_effective;
+    float rs;
+    float ratio;
+
+    if ((ppm == NULL) || (adc == 0U) || (adc >= 4095U))
+    {
+        return 0;
+    }
+
+
+    voltage_adc = ((float)adc * MQ135_ADC_VREF) /
+                  MQ135_ADC_MAX;
+
+
+    voltage_sensor = voltage_adc *
+                     (MQ135_DIVIDER_R1_KOHM +
+                      MQ135_DIVIDER_R2_KOHM) /
+                     MQ135_DIVIDER_R2_KOHM;
+
+    if ((voltage_sensor <= 0.01f) ||
+        (voltage_sensor >= MQ135_VC))
+    {
+        return 0;
+    }
+
+
+    rl_effective =
+        (MQ135_RL_KOHM *
+         (MQ135_DIVIDER_R1_KOHM + MQ135_DIVIDER_R2_KOHM)) /
+        (MQ135_RL_KOHM +
+         MQ135_DIVIDER_R1_KOHM +
+         MQ135_DIVIDER_R2_KOHM);
+
+
+    rs = rl_effective *
+         (MQ135_VC / voltage_sensor - 1.0f);
+
+    if (rs <= 0.0f)
+    {
+        return 0;
+    }
+
+
+    ratio = rs / MQ135_R0_KOHM;
+
+
+    *ppm = MQ135_PPM_COEFFICIENT *
+           powf(ratio, MQ135_PPM_EXPONENT);
+
+    if (!isfinite(*ppm) || (*ppm <= 0.0f))
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+
+
 
 static void SensorTask(void *argument)
 {
@@ -566,13 +559,20 @@ snprintf(msg, sizeof(msg),
                       100);
         }
 
-        sensorData.mq135_ok =
-            MQ135_ReadADC(&sensorData.mq135_adc);
+        uint16_t mq135_adc = 0;
 
-        if (!sensorData.mq135_ok)
-        {
-            sensorData.mq135_adc = 0;
-        }
+				sensorData.mq135_ok = MQ135_ReadADC(&mq135_adc);
+
+				if (sensorData.mq135_ok)
+				{
+						sensorData.mq135_ok =
+								MQ135_ADCToPPM(mq135_adc, &sensorData.mq135_ppm);
+				}
+
+				if (!sensorData.mq135_ok)
+				{
+						sensorData.mq135_ppm = 0.0f;
+				}
 
         AppData_PublishSensorData(&sensorData);
 
